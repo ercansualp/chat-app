@@ -121,21 +121,23 @@ export default function VerifyScreen() {
         style={styles.content}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <ArrowLeft size={24} color="#007AFF" />
-        </TouchableOpacity>
+        <View style={styles.topSection}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <ArrowLeft size={24} color="#007AFF" />
+          </TouchableOpacity>
 
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Shield size={32} color="#007AFF" />
+          <View style={styles.header}>
+            <View style={styles.iconContainer}>
+              <Shield size={32} color="#007AFF" />
+            </View>
+            <Text style={styles.title}>Doğrulama Kodu</Text>
+            <Text style={styles.subtitle}>
+              {phoneNumber && formatPhoneNumber(phoneNumber)} numarasına gönderilen 6 haneli kodu girin
+            </Text>
           </View>
-          <Text style={styles.title}>Doğrulama Kodu</Text>
-          <Text style={styles.subtitle}>
-            {phoneNumber && formatPhoneNumber(phoneNumber)} numarasına gönderilen 6 haneli kodu girin
-          </Text>
         </View>
 
-        <View style={styles.form}>
+        <View style={styles.middleSection}>
           <View style={styles.codeInputContainer}>
             {code.map((digit, index) => (
               <TextInput
@@ -151,6 +153,7 @@ export default function VerifyScreen() {
                 keyboardType="number-pad"
                 maxLength={1}
                 textAlign="center"
+                selectTextOnFocus
               />
             ))}
           </View>
@@ -174,16 +177,16 @@ export default function VerifyScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.timerText}>
-            {canResend ? (
-              <TouchableOpacity onPress={handleResendCode}>
-                <Text style={styles.resendText}>Kodu tekrar gönder</Text>
-              </TouchableOpacity>
-            ) : (
-              `Kodu tekrar gönder (${timer}s)`
-            )}
-          </Text>
+        <View style={styles.bottomSection}>
+          <TouchableOpacity 
+            onPress={handleResendCode}
+            disabled={!canResend}
+            style={styles.resendContainer}
+          >
+            <Text style={[styles.resendText, !canResend && styles.resendTextDisabled]}>
+              {canResend ? 'Kodu tekrar gönder' : `Kodu tekrar gönder (${timer}s)`}
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -198,17 +201,21 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
+  },
+  topSection: {
+    flex: 1,
     justifyContent: 'center',
+    minHeight: 200,
   },
   backButton: {
     position: 'absolute',
-    top: 60,
-    left: 24,
+    top: -100,
+    left: 0,
     padding: 8,
+    zIndex: 1,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 48,
   },
   iconContainer: {
     width: 80,
@@ -220,29 +227,32 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     color: '#1C1C1E',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
     color: '#8E8E93',
     textAlign: 'center',
     lineHeight: 22,
+    paddingHorizontal: 20,
   },
-  form: {
-    marginBottom: 48,
+  middleSection: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 40,
   },
   codeInputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    gap: 8,
+    justifyContent: 'center',
+    marginBottom: 40,
+    gap: 12,
   },
   codeInput: {
-    flex: 1,
+    width: 48,
     height: 56,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
@@ -251,6 +261,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     color: '#1C1C1E',
+    textAlign: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   codeInputFilled: {
     borderColor: '#007AFF',
@@ -260,6 +279,14 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   verifyButtonActive: {
     backgroundColor: '#007AFF',
@@ -277,17 +304,22 @@ const styles = StyleSheet.create({
   verifyButtonTextInactive: {
     color: '#8E8E93',
   },
-  footer: {
+  bottomSection: {
+    flex: 0.5,
+    justifyContent: 'center',
     alignItems: 'center',
+    minHeight: 100,
   },
-  timerText: {
-    fontSize: 14,
-    color: '#8E8E93',
-    textAlign: 'center',
+  resendContainer: {
+    padding: 12,
   },
   resendText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#007AFF',
     fontWeight: '500',
+    textAlign: 'center',
+  },
+  resendTextDisabled: {
+    color: '#8E8E93',
   },
 });

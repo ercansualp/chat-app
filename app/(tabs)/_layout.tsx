@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { MessageCircle, Settings, Users } from 'lucide-react-native';
+import { MessageCircle, Settings, Users, User, Camera } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -27,11 +27,29 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="status"
+        options={{
+          title: 'Durum',
+          tabBarIcon: ({ size, color }) => (
+            <Camera size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="contacts"
         options={{
           title: 'Kişiler',
           tabBarIcon: ({ size, color }) => (
             <Users size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profil',
+          tabBarIcon: ({ size, color }) => (
+            <User size={size} color={color} />
           ),
         }}
       />
